@@ -11,6 +11,42 @@ variable "resource_group_name" {
   description = "Existing resource group where the IKS cluster will be provisioned."
 }
 
+variable "registry_type" {
+  type        = string
+  description = "The type of image registry (icr, ocp, other, none)"
+  default     = "icr"
+}
+
+variable "registry_host" {
+  type        = string
+  description = "The host that should be used for the image registry"
+  default     = ""
+}
+
+variable "registry_namespace" {
+  type        = string
+  description = "The namespace that should be used for the image registry"
+  default     = ""
+}
+
+variable "registry_user" {
+  type        = string
+  description = "The username for accessing the image registry"
+  default     = ""
+}
+
+variable "registry_password" {
+  type        = string
+  description = "The password for accessing the image registry"
+  default     = ""
+}
+
+variable "registry_url" {
+  type        = string
+  description = "The browser url to view the images in the registry"
+  default     = ""
+}
+
 variable "ibmcloud_api_key" {
   type        = string
   description = "The api key for IBM Cloud access"
@@ -35,9 +71,16 @@ variable "vlan_datacenter" {
   default     = ""
 }
 
-variable "vlan_region" {
+variable "region" {
   type        = string
   description = "Region for VLANs defined in private_vlan_number and public_vlan_number."
+  default     = ""
+}
+
+variable "vlan_region" {
+  type        = string
+  description = "(Deprecated) Region for VLANs defined in private_vlan_number and public_vlan_number."
+  default     = ""
 }
 
 # Cluster Variables
@@ -45,6 +88,13 @@ variable "cluster_machine_type" {
   type        = string
   description = "The machine type for the cluster worker nodes (b3c.4x16 is minimum for OpenShift)"
   default     = "b3c.4x16"
+}
+
+# Cluster Variables
+variable "flavor" {
+  type        = string
+  description = "The machine type for the cluster worker nodes (b3c.4x16 is minimum for OpenShift)"
+  default     = "mx2.4x32"
 }
 
 # Cluster Variables_num
@@ -70,18 +120,6 @@ variable "sre_namespace" {
   type        = string
   description = "Namespace for SRE tools"
   default     = "ibm-observe"
-}
-
-variable "release_namespaces" {
-  type        = list(string)
-  description = "Namespace for dev"
-  default     = ["dev", "test", "staging"]
-}
-
-variable "release_namespace_count" {
-  type        = number
-  description = "Namespace for dev"
-  default     = 3
 }
 
 variable "cluster_name" {
@@ -125,10 +163,10 @@ variable "vpc_cluster" {
   default     = "false"
 }
 
-variable "logdna_exists" {
+variable "provision_logdna" {
   type        = string
-  description = "Flag indicating that the logdna instance already exists"
-  default     = "false"
+  description = "Flag indicating that a logdna instance should be provisioned"
+  default     = "true"
 }
 
 variable "logdna_name" {
@@ -137,14 +175,62 @@ variable "logdna_name" {
   default     = ""
 }
 
-variable "sysdig_exists" {
+variable "logdna_region" {
   type        = string
-  description = "Flag indicating that the sysdig instance already exists"
-  default     = "false"
+  description = "The region where the logdna instance will be/has been provisioned. If not provided this will default to the overall region"
+  default     = ""
+}
+
+variable "provision_sysdig" {
+  type        = string
+  description = "Flag indicating that a sysdig instance should be provisioned"
+  default     = "true"
 }
 
 variable "sysdig_name" {
   type        = string
   description = "The name of the sysdig instance. This is particularly used for an existing sysdig instance. If not provided the name will be derived from the name_prefix/resource_group"
+  default     = ""
+}
+
+variable "sysdig_region" {
+  type        = string
+  description = "The region where the sysdig instance will be/has been provisioned. If not provided this will default to the overall region"
+  default     = ""
+}
+
+variable "vpc_zone_count" {
+  type        = string
+  description = "The number of vpc zones (0-3)"
+  default     = "0"
+}
+
+variable "cluster_provision_cos" {
+  type = string
+  description = "Flag indicating that cos instance should be provisioned by cluster-platform module"
+  default = "true"
+}
+
+variable "cos_name" {
+  type        = string
+  description = "The name of the existing cos instance"
+  default     = ""
+}
+
+variable "source_control_type" {
+  type        = string
+  description = "The type of source control system (github, gitlab, or none)"
+  default     = "github"
+}
+
+variable "source_control_url" {
+  type        = string
+  description = "The url to the source control system"
+  default     = "https://github.com"
+}
+
+variable "storage_class" {
+  type        = string
+  description = "The storage class of the persistence volume claim"
   default     = ""
 }
